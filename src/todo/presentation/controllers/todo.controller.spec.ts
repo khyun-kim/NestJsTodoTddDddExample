@@ -4,6 +4,7 @@ import { TodoController } from "./todo.controller"
 import { Test, TestingModule } from "@nestjs/testing";
 import { UpdateTodoDto } from "../dtos/update-todo.dto";
 import { TodoResponseDto } from "../dtos/todo-response.dto";
+import { CreateTodoDto } from "../dtos/create-todo.dto";
 
 describe("TodoController", () => {
     let controller: TodoController;
@@ -52,6 +53,18 @@ describe("TodoController", () => {
             expect(result).toEqual(expectedResponse);
         })
     })
+
+    
+    describe('create', () => {
+        it('CreateTodoDto를 받아 서비스의 create 메서드를 호출해야 한다', async () => {
+        const id = 'uuid-1234';
+        const createDto: CreateTodoDto = { content: '작성된 할 일 내용' };
+
+        await controller.create(createDto);
+
+        expect(service.create).toHaveBeenCalledWith(createDto.content);
+        });
+    });
 
     describe('update', () => {
         it('ID와 UpdateTodoDto를 받아 서비스의 update 메서드를 호출해야 한다', async () => {

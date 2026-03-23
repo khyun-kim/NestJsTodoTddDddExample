@@ -1,4 +1,4 @@
-import { ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { TodoExceptionFilter } from './todo-exception.filter';
 import { InvalidTodoContentException } from '../../domain/exceptions/invalid-todo-content.exception';
 import { TodoNotFoundException } from '../../domain/exceptions/todo-not-found.exception';
@@ -62,4 +62,10 @@ describe('TodoExceptionFilter', () => {
 
     expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
   });
+  
+  it("HttpException이 발생하면 해당 정보를 반환해야 한다", () => {
+    const exception = new BadRequestException();
+    filter.catch(exception, mockArgumentsHost);
+    expect(mockResponse.status).toHaveBeenCalledWith(exception.getStatus());
+  })
 });

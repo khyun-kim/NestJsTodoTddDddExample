@@ -77,6 +77,12 @@ describe("TodoService", () => {
             expect(existingTodo.content).toEqual("변경된 할 일");
             expect(repository.save).toHaveBeenCalledWith(existingTodo);
         })
+
+        it("존재하지 않는 할 일의 내용을 변경하고자 하면 오류가 발생해야 한다", async () => {
+            jest.spyOn(repository, "findById").mockResolvedValue(null);
+            await expect(service.update("non-exists", "test"))
+                .rejects.toThrow(TodoNotFoundException);
+        })
     })
 
     describe('toggleCompleted', () => {
