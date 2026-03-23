@@ -1,23 +1,30 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/shared/infrastructure/prisma/prisma.service";
-import { TodoItem } from "src/todo/domain/entities/todo-item.entity";
-import { ITodoRepository } from "src/todo/domain/interfaces/todo-repository.interface";
+import { PrismaService } from "../../../shared/infrastructure/prisma/prisma.service";
+import { TodoItem } from "../../../todo/domain/entities/todo-item.entity";
+import { ITodoRepository } from "../../../todo/domain/interfaces/todo-repository.interface";
 
 @Injectable()
 export class PrismaTodoRepository implements ITodoRepository {
     constructor(private readonly prisma: PrismaService) { }
 
-    save(item: TodoItem): Promise<void> {
-        throw new Error("Method not implemented.");
+    async save(item: TodoItem): Promise<void> {
+        await this.prisma.todo.upsert({
+            where: { id: item.id },
+            update: { content: item.content, isCompleted: item.isCompleted },
+            create: { id: item.id, content: item.content, isCompleted: item.isCompleted, createdAt: item.createdAt }
+        })
     }
-    findById(id: string): Promise<TodoItem | null> {
-        throw new Error("Method not implemented.");
+    async findById(id: string): Promise<TodoItem | null> {
+        const data = await this.prisma.todo.findUnique({ where: { id } });
+        if (!data) return null;
+        return new TodoItem(data.content, data.id, data.isCompleted, data.createdAt)
     }
-    findAll(): Promise<TodoItem[]> {
-        throw new Error("Method not implemented.");
+    async findAll(): Promise<TodoItem[]> {
+        const data = await this.prisma.todo.findMany();
+        return data.map((v) => new TodoItem(v.content, v.id, v.isCompleted, v.createdAt));
     }
-    removeById(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async removeById(id: string): Promise<void> {
+        await this.prisma.todo.delete({ where: { id } });
     }
 
 }

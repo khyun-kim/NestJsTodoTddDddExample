@@ -6,12 +6,12 @@ export class TodoItem {
   private _isCompleted: boolean;
   private _createdAt: number;
 
-  constructor(content: string, id?: string) {
+  constructor(content: string, id?: string, isCompleted?: boolean, createdAt?: number) {
     this.validateContent(content);
     this._id = id ?? Math.random().toString(36).substring(2, 9);
     this._content = content;
-    this._isCompleted = false;
-    this._createdAt = Date.now();
+    this._isCompleted = isCompleted ?? false;
+    this._createdAt = createdAt ?? Date.now();
   }
 
   get id() {

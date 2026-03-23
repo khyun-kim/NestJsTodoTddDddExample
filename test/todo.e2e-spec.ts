@@ -1,12 +1,33 @@
+import { execSync } from 'child_process';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import * as path from 'path';
+import * as dotenv from 'dotenv';
 
 describe('TodoController (E2E)', () => {
   let app: INestApplication;
-
   beforeAll(async () => {
+    const envPath = path.join(__dirname, '../.env.test');
+    const envConfig = dotenv.config({ path: envPath, override: true }).parsed;
+
+    const testDbUrl = envConfig?.DATABASE_URL || 'file:./prisma/test.db';
+
+    try {
+      execSync('npx prisma db push --accept-data-loss', {
+        stdio: 'inherit',
+        env: {
+          ...process.env,           // 기존 환경 변수들 유지
+          DATABASE_URL: testDbUrl, // 테스트 DB URL로 덮어쓰기!
+          NODE_ENV: 'test',        // 확실하게 test라고 명시
+        },
+      });
+    } catch (e) {
+      console.error('Prisma 스키마 푸시 실패');
+      throw e;
+    }
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();

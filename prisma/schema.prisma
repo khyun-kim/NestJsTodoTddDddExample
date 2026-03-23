@@ -7,8 +7,8 @@ datasource db {
 }
 
 model Todo {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   content     String
-  isCompleted Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  isCompleted Boolean @default(false)
+  createdAt   Int
 }
