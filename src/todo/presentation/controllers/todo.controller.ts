@@ -3,6 +3,7 @@ import { ITodoService } from "../../application/interfaces/todo-service.interfac
 import { CreateTodoDto } from "../dtos/create-todo.dto";
 import { TodoExceptionFilter } from "../filters/todo-exception.filter";
 import { UpdateTodoDto } from "../dtos/update-todo.dto";
+import { TodoResponseDto } from "../dtos/todo-response.dto";
 
 @Controller("/api/todo")
 @UseFilters(TodoExceptionFilter)
@@ -13,8 +14,9 @@ export class TodoController {
     ) {}
     
     @Get()
-    getAll() {
-        return this.todoService.findAll();
+    async getAll(): Promise<TodoResponseDto[]> {
+        const todos = await this.todoService.findAll();
+        return todos.map(TodoResponseDto.fromEntity);
     }
 
     @Post()

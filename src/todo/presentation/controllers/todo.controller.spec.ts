@@ -3,6 +3,7 @@ import { ITodoService } from "../../application/interfaces/todo-service.interfac
 import { TodoController } from "./todo.controller"
 import { Test, TestingModule } from "@nestjs/testing";
 import { UpdateTodoDto } from "../dtos/update-todo.dto";
+import { TodoResponseDto } from "../dtos/todo-response.dto";
 
 describe("TodoController", () => {
     let controller: TodoController;
@@ -33,16 +34,22 @@ describe("TodoController", () => {
     describe("getAll", () => {
         it("서비스의 findAll을 호출하고 할 일 목록을 반환해야 한다.", async () => {
             const todoList = [
-                new TodoItem("content", "id-1"),
-                new TodoItem("content2", "id-2"),
+                new TodoItem('content', 'id-1'), 
+                new TodoItem('content2', 'id-2')
             ];
-            jest.spyOn(service, "findAll").mockResolvedValue(todoList);
+            
+            // 서비스 모킹: 엔티티 배열을 반환하도록 설정
+            jest.spyOn(service, 'findAll').mockResolvedValue(todoList);
 
+            // 2. 실행: 컨트롤러 호출
             const result = await controller.getAll();
 
+            // 3. 검증
             expect(service.findAll).toHaveBeenCalled();
-            expect(result).toEqual(todoList)
-
+            
+            // 기대값도 DTO 배열로 변환해서 비교해야 합니다!
+            const expectedResponse = todoList.map(TodoResponseDto.fromEntity);
+            expect(result).toEqual(expectedResponse);
         })
     })
 
