@@ -1,41 +1,46 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, UseFilters } from "@nestjs/common";
-import { ITodoService } from "../../application/interfaces/todo-service.interface";
-import { CreateTodoDto } from "../dtos/create-todo.dto";
-import { TodoExceptionFilter } from "../filters/todo-exception.filter";
-import { UpdateTodoDto } from "../dtos/update-todo.dto";
-import { TodoResponseDto } from "../dtos/todo-response.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
+import { ITodoService } from '../../application/interfaces/todo-service.interface';
+import { CreateTodoDto } from '../dtos/create-todo.dto';
+import { TodoExceptionFilter } from '../filters/todo-exception.filter';
+import { UpdateTodoDto } from '../dtos/update-todo.dto';
+import { TodoResponseDto } from '../dtos/todo-response.dto';
 
-@Controller("/api/todo")
+@Controller('/api/todo')
 @UseFilters(TodoExceptionFilter)
 export class TodoController {
-    constructor(
-        @Inject(ITodoService)
-        private readonly todoService: ITodoService
-    ) {}
-    
-    @Get()
-    async getAll(): Promise<TodoResponseDto[]> {
-        const todos = await this.todoService.findAll();
-        return todos.map(TodoResponseDto.fromEntity);
-    }
+  constructor(
+    @Inject(ITodoService)
+    private readonly todoService: ITodoService,
+  ) {}
 
-    @Post()
-    async create(@Body() body: CreateTodoDto) {
-        await this.todoService.create(body.content);
-    }
+  @Get()
+  async getAll(): Promise<TodoResponseDto[]> {
+    const todos = await this.todoService.findAll();
+    return todos.map(TodoResponseDto.fromEntity);
+  }
 
-    @Patch(":id/toggle")
-    async toggle(
-        @Param("id") id: string
-    ) {
-        await this.todoService.toggleCompleted(id);
-    }
+  @Post()
+  async create(@Body() body: CreateTodoDto) {
+    await this.todoService.create(body.content);
+  }
 
-    @Patch(":id")
-    async update(
-        @Param("id") id: string,
-        @Body() body: UpdateTodoDto
-    ) {
-        await this.todoService.update(id, body.content);
-    }
+  @Patch(':id/toggle')
+  async toggle(@Param('id') id: string) {
+    await this.todoService.toggleCompleted(id);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body: UpdateTodoDto) {
+    await this.todoService.update(id, body.content);
+  }
 }

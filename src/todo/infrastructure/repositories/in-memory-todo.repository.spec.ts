@@ -10,7 +10,7 @@ describe('InMemoryTodoRepository', () => {
 
   it('save()를 통해 할 일을 저장하고 findById()로 찾을 수 있어야 한다', async () => {
     const todo = new TodoItem('테스트 할 일', 'uuid-1');
-    
+
     await repository.save(todo);
     const found = await repository.findById('uuid-1');
 

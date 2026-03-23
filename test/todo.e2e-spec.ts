@@ -8,7 +8,7 @@ describe('TodoController (E2E)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule], 
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -49,7 +49,6 @@ describe('TodoController (E2E)', () => {
         .get('/api/todo')
         .expect(200);
 
-        
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body[0]).toHaveProperty('id');
       expect(response.body[0]).toHaveProperty('content');
